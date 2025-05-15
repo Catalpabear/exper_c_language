@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "card_service.h": "c",
+        "menu.h": "c",
+        "stdio.h": "c",
+        "string.h": "c"
+    }
+}
