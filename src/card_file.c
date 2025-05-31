@@ -111,3 +111,28 @@ void binreadCardlist()
     // 关闭文件
     fclose(fp);
 }
+void saveallcard(){
+    FILE *fp = fopen("user_data/card.txt", "w");
+    if (fp == NULL)
+    {
+        printf("Error opening file!\n");
+        return;
+    }
+    Card *current = head;
+    current = current->next;
+    current = current->next;
+    while (current != NULL)
+    {
+        fprintf(fp, "%s##%s##%d##%s##%s##%.2f##%.2f##%d\n", 
+            current->aname, 
+            current->apwd, 
+            current->nstatus, 
+            current->start_time, 
+            current->last_time, 
+            current->totaluse, 
+            current->balance, 
+            current->use_times);
+        current = current->next;
+    }
+    fclose(fp);
+}

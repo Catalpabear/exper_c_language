@@ -9,6 +9,7 @@ typedef struct Card
     char start_time[80];//开卡时间
     time_t start_time_t;
     char last_time[80];//上次使用时间
+    time_t last_time_t;
     double totaluse;//累计使用金额
     double balance;//余额
     int use_times;//累计使用次数
@@ -25,4 +26,5 @@ void initCardList(Card **head,Card **lastnode);
 void addList(Card *head, Card *new_card);
 void PrintList(Card *head);
 void freelist(Card *head);
+void saveallcard();
 Card** find_cards_by_part(Card *head, const char *query_card, int *result_count);

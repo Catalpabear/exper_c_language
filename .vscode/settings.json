@@ -3,6 +3,7 @@
         "card_service.h": "c",
         "menu.h": "c",
         "stdio.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "admin.h": "c"
     }
 }

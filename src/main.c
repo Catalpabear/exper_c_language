@@ -9,7 +9,8 @@ int main()
     // binreadCardlist();
     //文本读取
     readCard();
-
+    //读取管理员信息
+    readAdmin();
     menu();
 
     freelist(head);
