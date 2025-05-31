@@ -403,8 +403,7 @@ void menu()
         case 7:
             if (is_admin == 0)
             {
-                printf("error: 你不是管理员,没有权限查询卡号\n");
-                printf("请联系管理员查询卡号\n");
+                printf("error: 你不是管理员,没有权限查询消费\n");
                 break;
             }
             printf("-------------查询统计------------\n");
