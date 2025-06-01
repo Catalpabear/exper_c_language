@@ -1,6 +1,8 @@
 #define max_cardname 19
 #define max_cardpwd 9
 #include<time.h>
+#include <stdio.h>
+#include <stdlib.h>
 typedef struct Card
 {
     char aname[19];

@@ -1,6 +1,4 @@
 #include"../head/card_service.h"
-#include <stdio.h>
-#include <stdlib.h>
 // extern Card acard[100];
 // extern int card_count;
 extern Card* head;

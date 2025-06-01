@@ -1,14 +1,13 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include"../head/card_service.h"
 #include"../head/admin.h"
+#include"../head/billing_service.h"
 // extern Card acard[100];
 // extern int card_count;
 extern Card* head;
 extern Card* lastnode;
 extern Admin three_admins[3];
 extern int admin_count;
+extern Loif* head_loif;
 void menu()
 {
     // 打印卡片信息
@@ -289,9 +288,8 @@ void menu()
             printf("使用时间为：%.2lf分钟\n", usage_time / 60.0);
             printf("消费金额为：%.2lf元\n", usage_amount);
             // 如果余额不足，提示用户充值
-            if (logout_index->balance < 0) 
+            while (logout_index->balance < 0) 
             {
-                printf("亲,我们这边一分钟10元呢,不是fuger记得注意时间\n");
                 printf("余额不足，请充值！\n");
                 printf("请输入充值金额<RMB>：");
                 double recharge_else;
@@ -300,18 +298,20 @@ void menu()
                 printf("充值成功！");
                 printf("当前余额为：%.2lf\n", logout_index->balance);
             }
-            while(logout_index->balance < 0)
-            {
-                printf("余额还是不够呢,要不要试试我们的贷款功能？\n");
-                printf("请输入贷款金额<RMB>：");
-                double recharge_else;
-                scanf("%lf", &recharge_else);
-                logout_index->balance += recharge_else;
-                printf("贷款成功！");
-                printf("当前余额为：%.2lf\n", logout_index->balance);
-                printf("当前利息为：1.6%%");
-            }
-            free(login_time); // 释放内存
+            // 存档下机信息
+            Loif logout_info;
+            strcpy(logout_info.cardname, logout_index->aname);
+            strcpy(logout_info.start_time, login_time);
+            logout_info.last_time_t = now_logout;
+            logout_info.amount = usage_amount;
+            logout_info.balance = logout_index->balance;
+            strftime(logout_info.last_time, sizeof(logout_info.last_time), "%Y-%m-%d %H:%M:%S", tm_info_logout);
+            // 将下机信息写入文件
+            write_logout_info("user_data/logout.txt", &logout_info);
+            // 将下机信息添加到链表
+            add_info_to_loif(head_loif, &logout_info);
+            // 释放内存
+            free(login_time); 
             printf("请在前台领取消费明细单！\n");   
             printf("下机成功\n");
             break;
@@ -408,12 +408,57 @@ void menu()
             }
             printf("-------------查询统计------------\n");
             printf("请输入0查询消费记录，输入1统计总营业额：");
-            int stat_choice;
+            int stat_choice=-1;
             scanf("%d", &stat_choice);
-            if (stat_choice)
-                printf("总营业额为：%lf\n", 1000.00);
+            if (stat_choice==1)
+            {
+
+            }
+            else if(stat_choice==0)
+            {
+                printf("-------------查询消费记录------------\n");
+                printf("请输入你要查询的卡号<长度为1-18>：");
+                char stat_card[30];
+                scanf("%s", stat_card);
+                if(strlen(stat_card) > 18)
+                {
+                    printf("error: 卡号长度超过18位 ");
+                    printf("请重新输入\n");
+                    break;
+                }
+                LoifMatches matches = find_loif_by_cardname(head_loif, stat_card);
+                if (matches.count == 0) 
+                {
+                    printf("没有找到相关消费记录！\n");
+                    free(matches.matches);
+                    break;
+                }
+                printf("找到 %d 条消费记录：\n", matches.count);
+                printf("卡号\t上机时间\t\t下机时间\t消费金额\t余额\n");
+                for (int i = 0; i < matches.count; i++) 
+                {
+                    printf("%s\t%s\t%s\t%.2lf\t%.2lf\n",
+                        matches.matches[i]->cardname,
+                        matches.matches[i]->start_time,
+                        matches.matches[i]->last_time,
+                        matches.matches[i]->amount,
+                        matches.matches[i]->balance);
+                }
+                free(matches.matches); // 释放匹配结果的内存
+                printf("请输入查询的时间段<格式为YYYY-MM-DD>\n");
+                char start_date[20], end_date[20];
+                printf("开始时间：");
+                scanf("%s", start_date);
+                printf("结束时间：");
+                scanf("%s", end_date);
+                // 时间段查询
+                
+            }
             else
-                printf("消费记录为：%d\n",1);
+            {
+                printf("输入错误，请重新输入0或1：");
+                break;
+            }
             break;
         case 8:
             printf("-------------注销卡------------\n");

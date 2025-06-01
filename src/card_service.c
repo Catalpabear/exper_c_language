@@ -1,7 +1,5 @@
 #include"../head/card_service.h"
 #include<string.h>
-#include<stdio.h>
-#include<stdlib.h>
 #include<ctype.h> // 用于字符分类函数
 // Card acard[100];
 // int card_count = 0;
