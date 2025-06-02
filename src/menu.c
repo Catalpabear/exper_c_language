@@ -434,10 +434,10 @@ void menu()
                     break;
                 }
                 printf("找到 %d 条消费记录：\n", matches.count);
-                printf("卡号\t上机时间\t\t下机时间\t消费金额\t余额\n");
+                printf("卡号\t上机时间\t\t下机时间\t\t消费金额\t余额\n");
                 for (int i = 0; i < matches.count; i++) 
                 {
-                    printf("%s\t%s\t%s\t%.2lf\t%.2lf\n",
+                    printf("%s\t%s\t%s\t%.2lf\t\t%.2lf\n",
                         matches.matches[i]->cardname,
                         matches.matches[i]->start_time,
                         matches.matches[i]->last_time,
@@ -445,7 +445,7 @@ void menu()
                         matches.matches[i]->balance);
                 }
                 free(matches.matches); // 释放匹配结果的内存
-                printf("请输入查询的时间段<格式为YYYY-MM-DD>\n");
+                printf("请输入查询的时间段<格式为YY-MM>\n");
                 char start_date[20], end_date[20];
                 printf("开始时间：");
                 scanf("%s", start_date);

@@ -1,5 +1,5 @@
 #include"../head/billing_service.h"
-
+extern Loif* head_loif;
 void write_logout_info(const char *filename, const Loif *logout_info)
 {
     FILE *fp = fopen("user_data/logout.txt", "a+");
@@ -16,44 +16,30 @@ void write_logout_info(const char *filename, const Loif *logout_info)
             logout_info->balance);
     fclose(fp);
 }
-Loif* read_logout_info()
+void read_logout_info()
 {
     FILE *fp = fopen("user_data/logout.txt", "r");
-    if (fp == NULL)
+    if (fp == NULL) 
     {
         printf("Error opening file!\n");
-        return NULL;
+        return;
     }
-    Loif *head = NULL, *tail = NULL;
     char buffer[256];
-    
-    while (fgets(buffer, sizeof(buffer), fp) != NULL)
+    while (fgets(buffer, sizeof(buffer), fp) != NULL) 
     {
-        Loif *new_node = (Loif *)malloc(sizeof(Loif));
-        if (sscanf(buffer, "%[^#]##%[^#]##%lf##%lf", 
-                   new_node->cardname, 
-                   new_node->start_time, 
-                   &new_node->amount, 
-                   &new_node->balance) == 4)
+        Loif* logout_info = (Loif*)malloc(sizeof(Loif));
+        if (sscanf(buffer, "%[^#]##%[^#]##%[^#]##%lf##%lf", 
+                   logout_info->cardname, 
+                   logout_info->start_time, 
+                   logout_info->last_time, 
+                   &logout_info->amount, 
+                   &logout_info->balance) == 5) 
+            add_info_to_loif(head_loif, logout_info);
+        else 
         {
-            new_node->next = NULL;
-            if (head == NULL)
-            {
-                head = new_node;
-                tail = new_node;
-            }
-            else
-            {
-                tail->next = new_node;
-                tail = new_node;
-            }
-        }
-        else
-        {
-            free(new_node);
             printf("Error parsing logout data: %s\n", buffer);
+            free(logout_info);
         }
     }
     fclose(fp);
-    return head;
 }

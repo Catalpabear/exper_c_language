@@ -4,6 +4,7 @@
         "menu.h": "c",
         "stdio.h": "c",
         "string.h": "c",
-        "admin.h": "c"
+        "admin.h": "c",
+        "billing_service.h": "c"
     }
 }

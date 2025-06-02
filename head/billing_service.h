@@ -22,7 +22,7 @@ typedef struct {
 void write_logout_info(const char *filename, const Loif *logout_info);
 int initLoifList(Loif **head_, Loif **move_loif);
 void freeloiflist(Loif *head);
-Loif* read_logout_info();
+void read_logout_info();
 LoifMatches find_loif_by_cardname(Loif *head, const char *query_card);
 void add_info_to_loif(Loif *head, const Loif *new_info);
 #endif // BILLING_SERVICE_H

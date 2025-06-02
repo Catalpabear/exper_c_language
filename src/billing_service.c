@@ -68,6 +68,7 @@ void add_info_to_loif(Loif *head, const Loif *new_info) {
     // 复制新信息到新节点
     strcpy(new_node->cardname, new_info->cardname);
     strcpy(new_node->start_time, new_info->start_time);
+    strcpy(new_node->last_time, new_info->last_time);
     new_node->last_time_t = new_info->last_time_t;
     new_node->amount = new_info->amount;
     new_node->balance = new_info->balance;
