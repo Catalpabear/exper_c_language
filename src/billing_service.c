@@ -82,3 +82,83 @@ void add_info_to_loif(Loif *head, const Loif *new_info) {
     }
     current->next = new_node; // 将新节点链接到链表末尾
 }
+//转化int数组为数字
+int combine_to_four_digit_int_specially(int *arr) 
+{
+    int size=4;
+    if (arr == NULL || size != 4) {
+        return -1; // 返回一个错误代码
+    }
+
+    int result = 0;
+    for (int i = 0; i < size; i++) {
+        result = result * 10 + arr[i];
+    }
+    return result;
+}
+//提取YYMMint数组
+int* extract_and_convert_specially(const char *str) 
+{
+    int positions[]={2,3,5,6};
+    int num_positions=4;
+    if (str == NULL || num_positions <= 0) {
+        return NULL;
+    }
+
+    int *result = (int*)malloc(sizeof(int) * num_positions);
+    if (result == NULL) {
+        perror("内存分配失败");
+        return NULL;
+    }
+
+    for (int i = 0; i < num_positions; i++) {
+        if (positions[i] >= 0 && positions[i] < strlen(str)) {
+            // 提取字符并转换为 int
+            char char_to_convert[2];
+            char_to_convert[0] = str[positions[i]];
+            char_to_convert[1] = '\0';
+            result[i] = atoi(char_to_convert);
+        } else {
+            result[i] = 0; // 如果位置无效，则设置为 0 或其他默认值
+        }
+    }
+
+    return result;
+}
+
+LoifMatches find_loif_by_date(Loif *head, const int start_date, const int end_date) 
+{
+    LoifMatches result = {NULL, 0};
+    Loif** matches = (Loif**)malloc(sizeof(Loif*) * MAX_MATCHES);
+    if (matches == NULL) 
+    {
+        perror("内存分配失败");
+        return result; // 返回空的 LoifMatches
+    }
+
+    int match_count = 0;
+    while (head != NULL) 
+    {
+        int*need_free=extract_and_convert_specially(head->start_time);
+        int*need_free2=extract_and_convert_specially(head->last_time);
+
+        int start_1=combine_to_four_digit_int_specially(need_free);
+        int end_1=combine_to_four_digit_int_specially(need_free2);
+        if (start_date<=start_1&&end_1<=end_date) 
+        {
+            if (match_count < MAX_MATCHES) 
+                matches[match_count++] = head; // 存储匹配的指针
+            else 
+            {
+                printf("超过最大匹配数量，忽略更多匹配项\n");
+                break; // 停止查找更多匹配项
+            }
+        }
+        head = head->next; // 移动到下一个节点
+        free(need_free);
+        free(need_free2);
+    }
+    result.matches = matches;
+    result.count = match_count;
+    return result;
+}

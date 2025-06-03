@@ -426,33 +426,53 @@ void menu()
                     printf("请重新输入\n");
                     break;
                 }
-                LoifMatches matches = find_loif_by_cardname(head_loif, stat_card);
-                if (matches.count == 0) 
-                {
-                    printf("没有找到相关消费记录！\n");
-                    free(matches.matches);
-                    break;
-                }
-                printf("找到 %d 条消费记录：\n", matches.count);
-                printf("卡号\t上机时间\t\t下机时间\t\t消费金额\t余额\n");
-                for (int i = 0; i < matches.count; i++) 
-                {
-                    printf("%s\t%s\t%s\t%.2lf\t\t%.2lf\n",
-                        matches.matches[i]->cardname,
-                        matches.matches[i]->start_time,
-                        matches.matches[i]->last_time,
-                        matches.matches[i]->amount,
-                        matches.matches[i]->balance);
-                }
-                free(matches.matches); // 释放匹配结果的内存
-                printf("请输入查询的时间段<格式为YY-MM>\n");
+                // LoifMatches matches = find_loif_by_cardname(head_loif, stat_card);
+                // if (matches.count == 0) 
+                // {
+                //     printf("没有找到相关消费记录！\n");
+                //     free(matches.matches);
+                //     break;
+                // }
+                // printf("找到 %d 条消费记录：\n", matches.count);
+                // printf("卡号\t上机时间\t\t下机时间\t\t消费金额\t余额\n");
+                // for (int i = 0; i < matches.count; i++) 
+                // {
+                //     printf("%s\t%s\t%s\t%.2lf\t\t%.2lf\n",
+                //         matches.matches[i]->cardname,
+                //         matches.matches[i]->start_time,
+                //         matches.matches[i]->last_time,
+                //         matches.matches[i]->amount,
+                //         matches.matches[i]->balance);
+                // }
+                // free(matches.matches); // 释放匹配结果的内存
+                
+                printf("请输入查询的时间段<格式为YYMM>\n");
                 char start_date[20], end_date[20];
                 printf("开始时间：");
                 scanf("%s", start_date);
                 printf("结束时间：");
                 scanf("%s", end_date);
                 // 时间段查询
-                
+                int start_time=atoi(start_date),end_time=atoi(end_date);
+                LoifMatches time_matches = find_loif_by_date(head_loif, start_time, end_time);
+                if (time_matches.count == 0) 
+                {
+                    printf("没有找到相关时间段的消费记录！\n");
+                    free(time_matches.matches);
+                    break;
+                }
+                printf("找到 %d 条时间段内的消费记录：\n", time_matches.count);
+                printf("卡号\t上机时间\t\t下机时间\t\t消费金额\t余额\n");
+                for (int i = 0; i < time_matches.count; i++) 
+                {
+                    printf("%s\t%s\t%s\t%.2lf\t\t%.2lf\n",
+                        time_matches.matches[i]->cardname,
+                        time_matches.matches[i]->start_time,
+                        time_matches.matches[i]->last_time,
+                        time_matches.matches[i]->amount,
+                        time_matches.matches[i]->balance);
+                }
+                free(time_matches.matches); // 释放时间段查询结果的内存
             }
             else
             {

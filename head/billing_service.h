@@ -25,4 +25,7 @@ void freeloiflist(Loif *head);
 void read_logout_info();
 LoifMatches find_loif_by_cardname(Loif *head, const char *query_card);
 void add_info_to_loif(Loif *head, const Loif *new_info);
+LoifMatches find_loif_by_date(Loif *head, const int start_date, const int end_date);
+
+
 #endif // BILLING_SERVICE_H
