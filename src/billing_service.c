@@ -19,34 +19,6 @@ int initLoifList(Loif **head_, Loif **move_loif)
     (*head_)->next = NULL; // 确保链表头的下一个指针为空
     return 1; // 成功初始化
 }
-LoifMatches find_loif_by_cardname(Loif *head, const char *query_card) {
-    LoifMatches result = {NULL, 0};
-    Loif** matches = (Loif**)malloc(sizeof(Loif*) * MAX_MATCHES);
-    if (matches == NULL) 
-    {
-        perror("内存分配失败");
-        return result; // 返回空的 LoifMatches
-    }
-
-    int match_count = 0;
-    while (head != NULL) 
-    {
-        if (strcmp(head->cardname, query_card) == 0) 
-        {
-            if (match_count < MAX_MATCHES) 
-                matches[match_count++] = head; // 存储匹配的指针
-            else 
-            {
-                printf("超过最大匹配数量，忽略更多匹配项\n");
-                break; // 停止查找更多匹配项
-            }
-        }
-        head = head->next; // 移动到下一个节点
-    }
-    result.matches = matches;
-    result.count = match_count;
-    return result;
-}
 void freeloiflist(Loif*head)
 {
     Loif *current = head;
@@ -126,7 +98,7 @@ int* extract_and_convert_specially(const char *str)
     return result;
 }
 
-LoifMatches find_loif_by_date(Loif *head, const int start_date, const int end_date) 
+LoifMatches find_loif_by_date(Loif *head, const int start_date, const int end_date, const char* query_card) 
 {
     LoifMatches result = {NULL, 0};
     Loif** matches = (Loif**)malloc(sizeof(Loif*) * MAX_MATCHES);
@@ -144,7 +116,8 @@ LoifMatches find_loif_by_date(Loif *head, const int start_date, const int end_da
 
         int start_1=combine_to_four_digit_int_specially(need_free);
         int end_1=combine_to_four_digit_int_specially(need_free2);
-        if (start_date<=start_1&&end_1<=end_date) 
+        if (start_date<=start_1&&end_1<=end_date&& 
+            (strcmp(head->cardname, query_card) == 0))
         {
             if (match_count < MAX_MATCHES) 
                 matches[match_count++] = head; // 存储匹配的指针
@@ -161,4 +134,40 @@ LoifMatches find_loif_by_date(Loif *head, const int start_date, const int end_da
     result.matches = matches;
     result.count = match_count;
     return result;
+}
+double calc_monthly_revenue(Loif* head, char *month)
+{
+    double sum=0;
+    while (head_loif != NULL) 
+    {
+        int month_int = atoi(month);
+        int* month_arr = extract_and_convert_specially(head_loif->last_time);
+        int month_num = combine_to_four_digit_int_specially(month_arr);
+        free(month_arr);
+        if(month_int==month_num)
+        {
+            sum+= head_loif->amount;
+        }
+        head_loif = head_loif->next; // 移动到下一个节点
+    }
+    return sum;
+}
+double calc_total_revenue(Loif* head_loif, int start_time,int end_time)
+{
+    double sum = 0;
+    while (head_loif != NULL) 
+    {
+        int*need_free=extract_and_convert_specially(head_loif->last_time);
+        int*need_free2=extract_and_convert_specially(head_loif->start_time);
+        int start_1=combine_to_four_digit_int_specially(need_free2);
+        int end_1=combine_to_four_digit_int_specially(need_free);
+        if (start_time <= start_1 && end_1 <= end_time) 
+        {
+            sum += head_loif->amount; // 累加消费金额
+        }
+        head_loif = head_loif->next; // 移动到下一个节点
+        free(need_free);
+        free(need_free2);
+    }
+    return sum;
 }

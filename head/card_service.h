@@ -30,3 +30,4 @@ void PrintList(Card *head);
 void freelist(Card *head);
 void saveallcard();
 Card** find_cards_by_part(Card *head, const char *query_card, int *result_count);
+int getCardAndPassword(Card** card, const char* prompt, Card* head);

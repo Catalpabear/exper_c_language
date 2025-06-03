@@ -211,3 +211,34 @@ Card** find_cards_by_part(Card *head, const char *query_card, int *result_count)
     }
     return results;
 }
+int getCardAndPassword(Card** card, const char* prompt, Card* head) {
+    char input_card[30];
+    char input_password[20];
+
+    printf("%s<长度为1-18>：", prompt);
+    scanf("%s", input_card);
+    if (strlen(input_card) > 18) {
+        printf("error: 卡号长度超过18位\n");
+        return 1; // 错误代码
+    }
+
+    *card = find_card_by_aname(head, input_card);
+    if (*card == NULL) {
+        printf("卡号不存在！\n");
+        return 1; // 错误代码
+    }
+
+    printf("请输入密码<长度为1-8>：");
+    scanf("%s", input_password);
+    if (strlen(input_password) > 8) {
+        printf("error: 密码长度超过8位\n");
+        return 1; // 错误代码
+    }
+
+    if (strcmp((*card)->apwd, input_password) != 0) {
+        printf("密码错误！\n");
+        return 1; // 错误代码
+    }
+
+    return 0; // 成功代码
+}

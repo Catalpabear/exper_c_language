@@ -1,8 +1,6 @@
 #include"../head/card_service.h"
 #include"../head/admin.h"
 #include"../head/billing_service.h"
-// extern Card acard[100];
-// extern int card_count;
 extern Card* head;
 extern Card* lastnode;
 extern Admin three_admins[3];
@@ -109,23 +107,6 @@ void menu()
         
         scanf("%d", &choice);
         
-        // if (fgets(input, sizeof(input), stdin) == NULL) {
-        //     printf("输入错误，请重新选择菜单项编号(0-8):\n");
-        //     continue;
-        // }
-
-        // // 尝试将输入解析为整数
-        // if (sscanf(input, "%d", &choice) != 1) {
-        //     printf("输入无效，请输入数字(0-8):\n");
-        //     continue;
-        // }
-
-        // // 检查输入是否在有效范围内
-        // if (choice < 0 || choice > 8) {
-        //     printf("输入超出范围，请输入数字(0-8):\n");
-        //     continue;
-        // }
-        
         switch (choice)
         {
         case 1:
@@ -172,34 +153,11 @@ void menu()
             break;
         case 3:
             printf("-------------上机------------\n");
-            printf("请输入卡号<长度为1-18>：");
-            char login_card[30];
-            scanf("%s", login_card);
-            if(strlen(login_card) > 18)
-            {
-                printf("error: 卡号长度超过18位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            Card*login_index = find_card_by_aname(head, login_card);
-            if (login_index == NULL) 
-            {
-                printf("卡号不存在！\n");
-                break;
-            }
-            printf("请输入密码<长度为1-8>：");
-            char login_password[20];
-            scanf("%s", login_password);
-            if(strlen(login_password) > 8)
-            {
-                printf("error: 密码长度超过8位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            if (strcmp(login_index->apwd, login_password))
-            {
-                printf("密码错误！\n");
-                break;
+            Card* login_index = NULL;
+            if (getCardAndPassword(&login_index, "请输入卡号", head)) 
+            {    
+                printf("error: 卡号或密码错误！\n");
+                break; // 如果函数返回错误，则退出 case
             }
             if (login_index->nstatus != 0) 
             {
@@ -224,34 +182,11 @@ void menu()
             break;
         case 4:
             printf("-------------上机------------\n");
-            printf("请输入卡号<长度为1-18>：");
-            char logout_card[30];
-            scanf("%s", logout_card);
-            if(strlen(logout_card) > 18)
-            {
-                printf("error: 卡号长度超过18位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            Card*logout_index = find_card_by_aname(head, logout_card);
-            if (logout_index == NULL) 
-            {
-                printf("卡号不存在！\n");
-                break;
-            }
-            printf("请输入密码<长度为1-8>：");
-            char logout_password[20];
-            scanf("%s", logout_password);
-            if(strlen(logout_password) > 8)
-            {
-                printf("error: 密码长度超过8位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            if (strcmp(logout_index->apwd, logout_password))
-            {
-                printf("密码错误！\n");
-                break;
+            Card* logout_index = NULL;
+            if (getCardAndPassword(&logout_index, "请输入卡号", head)) 
+            {    
+                printf("error: 卡号或密码错误！\n");
+                break; // 如果函数返回错误，则退出 case
             }
             if (logout_index->nstatus != 1) 
             {
@@ -317,20 +252,11 @@ void menu()
             break;
         case 5:
             printf("-------------充值------------\n");
-            printf("请输入卡号<长度为1-18>：");
-            char recharge_card[30];
-            scanf("%s", recharge_card);
-            if(strlen(recharge_card) > 18)
-            {
-                printf("error: 卡号长度超过18位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            Card * charge_return=find_card_by_aname(head,recharge_card);
-            if (charge_return == NULL) 
-            {
-                printf("卡号不存在！\n");
-                break;
+            Card* charge_return = NULL;
+            if (getCardAndPassword(&charge_return, "请输入卡号", head)) 
+            {    
+                printf("error: 卡号或密码错误！\n");
+                break; // 如果函数返回错误，则退出 case
             }
             if (charge_return->nstatus != 0) 
             {
@@ -347,34 +273,11 @@ void menu()
             break;
         case 6:
             printf("-------------退费------------\n");
-            printf("请输入卡号<长度为1-18>：");
-            char refund_card[30];
-            scanf("%s", refund_card);
-            if(strlen(refund_card) > 18)
-            {
-                printf("error: 卡号长度超过18位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            Card* refund_index = find_card_by_aname(head, refund_card);
-            if (refund_index == NULL)
-            {
-                printf("卡号不存在！\n");
-                break;
-            }
-            printf("请输入密码<长度为1-8>：");
-            char refund_password[20];
-            scanf("%s", refund_password);
-            if(strlen(refund_password) > 8)
-            {
-                printf("error: 密码长度超过8位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            if (strcmp(refund_index->apwd, refund_password) != 0) 
-            {
-                printf("密码错误！\n");
-                break;
+            Card* refund_index = NULL;
+            if (getCardAndPassword(&refund_index, "请输入卡号", head)) 
+            {    
+                printf("error: 卡号或密码错误！\n");
+                break; // 如果函数返回错误，则退出 case
             }
             if (refund_index->nstatus != 0) 
             {
@@ -412,7 +315,35 @@ void menu()
             scanf("%d", &stat_choice);
             if (stat_choice==1)
             {
-
+                printf("请输入0查询总营业额，输入1统计每个月营业额：");
+                int seco_choice=-1;
+                scanf("%d", &seco_choice);
+                if(seco_choice==0)
+                {
+                    printf("请输入查询的时间段<格式为YYMM>\n");
+                    char start_date[20], end_date[20];
+                    printf("开始时间：");
+                    scanf("%s", start_date);
+                    printf("结束时间：");
+                    scanf("%s", end_date);
+                    // 时间段查询
+                    int start_time=atoi(start_date),end_time=atoi(end_date);
+                    int summ=calc_total_revenue(head_loif, start_time, end_time);
+                    printf("该时间段的总营业额为：%d元\n", summ);
+                }
+                else if(seco_choice==1)
+                {
+                    printf("请输入月份<格式为YYMM>：");
+                    char month[20];
+                    scanf("%s", month);
+                    int sum=calc_monthly_revenue(head_loif, month);
+                    printf("该月份的总营业额为：%d元\n", sum);
+                }
+                else
+                {
+                    printf("输入错误，请重新输入0或1：");
+                    break;
+                }
             }
             else if(stat_choice==0)
             {
@@ -426,26 +357,6 @@ void menu()
                     printf("请重新输入\n");
                     break;
                 }
-                // LoifMatches matches = find_loif_by_cardname(head_loif, stat_card);
-                // if (matches.count == 0) 
-                // {
-                //     printf("没有找到相关消费记录！\n");
-                //     free(matches.matches);
-                //     break;
-                // }
-                // printf("找到 %d 条消费记录：\n", matches.count);
-                // printf("卡号\t上机时间\t\t下机时间\t\t消费金额\t余额\n");
-                // for (int i = 0; i < matches.count; i++) 
-                // {
-                //     printf("%s\t%s\t%s\t%.2lf\t\t%.2lf\n",
-                //         matches.matches[i]->cardname,
-                //         matches.matches[i]->start_time,
-                //         matches.matches[i]->last_time,
-                //         matches.matches[i]->amount,
-                //         matches.matches[i]->balance);
-                // }
-                // free(matches.matches); // 释放匹配结果的内存
-                
                 printf("请输入查询的时间段<格式为YYMM>\n");
                 char start_date[20], end_date[20];
                 printf("开始时间：");
@@ -454,7 +365,7 @@ void menu()
                 scanf("%s", end_date);
                 // 时间段查询
                 int start_time=atoi(start_date),end_time=atoi(end_date);
-                LoifMatches time_matches = find_loif_by_date(head_loif, start_time, end_time);
+                LoifMatches time_matches = find_loif_by_date(head_loif, start_time, end_time,stat_card);
                 if (time_matches.count == 0) 
                 {
                     printf("没有找到相关时间段的消费记录！\n");
@@ -482,34 +393,11 @@ void menu()
             break;
         case 8:
             printf("-------------注销卡------------\n");
-            printf("请输入卡号<长度为1-18>：");
-            char cancel_card[30];
-            scanf("%s", cancel_card);
-            if(strlen(cancel_card) > 18)
-            {
-                printf("error: 卡号长度超过18位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            Card*cancel_index = find_card_by_aname(head, cancel_card);
-            if (cancel_index == NULL) 
-            {
-                printf("卡号不存在！\n");
-                break;
-            }
-            printf("请输入密码<长度为1-8>：");
-            char cancel_password[20];
-            scanf("%s", cancel_password);
-            if(strlen(cancel_password) > 8)
-            {
-                printf("error: 密码长度超过8位 ");
-                printf("请重新输入\n");
-                break;
-            }
-            if (strcmp(cancel_index->apwd, cancel_password))
-            {
-                printf("密码错误！\n");
-                break;
+            Card* cancel_index = NULL;
+            if (getCardAndPassword(&cancel_index, "请输入卡号", head)) 
+            {    
+                printf("error: 卡号或密码错误！\n");
+                break; // 如果函数返回错误，则退出 case
             }
             if (cancel_index->nstatus != 0) 
             {
