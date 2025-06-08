@@ -6,6 +6,9 @@ extern Card* lastnode;
 extern Admin three_admins[3];
 extern int admin_count;
 extern Loif* head_loif;
+extern Liif* head_liif;
+extern Reif* head_reif;
+extern Rof* head_roif;
 void menu()
 {
     // 打印卡片信息
@@ -169,6 +172,7 @@ void menu()
             // 获取当前时间
             time_t now = time(NULL);
             login_index->last_time_t= now;
+
             struct tm *tm_info = localtime(&now);
             strftime(login_index->last_time, sizeof(login_index->last_time), "%Y-%m-%d %H:%M:%S", tm_info);
             printf("卡号\t状态\t余额\t上机时间\n");
@@ -177,11 +181,22 @@ void menu()
                 login_index->nstatus,
                 login_index->balance,
                 login_index->last_time);
-            printf("上机成功\n");
+            // 存档上机信息
+            Liif login_info;
+            strcpy(login_info.cardname, login_index->aname);
+            strcpy(login_info.start_time, login_index->last_time);
+            login_info.balance = login_index->balance;
+            login_info.start_time_t = now; // 保存上机时间
+            // 将上机信息写入文件
+            write_login_info( &login_info);
+            // 将上机信息添加到链表
+            add_info_to_Liif(head_liif, &login_info);
             
+            printf("上机成功\n");
+            saveallcard();// 保存所有卡片信息到文本文件
             break;
         case 4:
-            printf("-------------上机------------\n");
+            printf("-------------下机------------\n");
             Card* logout_index = NULL;
             if (getCardAndPassword(&logout_index, "请输入卡号", head)) 
             {    
@@ -204,7 +219,8 @@ void menu()
             strcpy(login_time, logout_index->last_time);
             // 计算使用时间和消费金额
             time_t now_logout = time(NULL);
-            double usage_time = difftime(now_logout, logout_index->last_time_t);
+            Liif* login_info_loif_need = find_liif_by_cardname(head_liif, logout_index->aname);
+            double usage_time = difftime(now_logout,login_info_loif_need->start_time_t); // 计算使用时间);
             double usage_amount = usage_time / 60.0 * 10.0; // 假设每分钟10.0元
             logout_index->totaluse += usage_amount; // 累计使用金额
             logout_index->balance -= usage_amount; // 扣除余额
@@ -230,6 +246,15 @@ void menu()
                 double recharge_else;
                 scanf("%lf", &recharge_else);
                 logout_index->balance += recharge_else;
+                // 存档充值信息
+                Reif charge_info;
+                strcpy(charge_info.cardname, logout_index->aname);
+                strcpy(charge_info.recharge_time, logout_index->last_time);
+                charge_info.amount = recharge_else;
+                // 将充值信息写入文件
+                write_recharge_info( &charge_info);
+                // 将充值信息添加到链表
+                add_info_to_Reif(head_reif, &charge_info);
                 printf("充值成功！");
                 printf("当前余额为：%.2lf\n", logout_index->balance);
             }
@@ -242,13 +267,14 @@ void menu()
             logout_info.balance = logout_index->balance;
             strftime(logout_info.last_time, sizeof(logout_info.last_time), "%Y-%m-%d %H:%M:%S", tm_info_logout);
             // 将下机信息写入文件
-            write_logout_info("user_data/logout.txt", &logout_info);
+            write_logout_info( &logout_info);
             // 将下机信息添加到链表
             add_info_to_loif(head_loif, &logout_info);
             // 释放内存
             free(login_time); 
             printf("请在前台领取消费明细单！\n");   
             printf("下机成功\n");
+            saveallcard(); // 保存所有卡片信息到文本文件
             break;
         case 5:
             printf("-------------充值------------\n");
@@ -268,8 +294,18 @@ void menu()
             double recharge;
             scanf("%lf", &recharge);
             charge_return->balance += recharge;
+            // 存档充值信息
+            Reif charge_info;
+            strcpy(charge_info.cardname, charge_return->aname);
+            strcpy(charge_info.recharge_time, charge_return->last_time);
+            charge_info.amount = recharge;
+            // 将充值信息写入文件
+            write_recharge_info( &charge_info);
+            // 将充值信息添加到链表
+            add_info_to_Reif(head_reif, &charge_info);
             printf("充值成功！");
             printf("当前余额为：%.2lf\n", charge_return->balance);
+            saveallcard(); // 保存所有卡片信息到文本文件
             break;
         case 6:
             printf("-------------退费------------\n");
@@ -299,9 +335,19 @@ void menu()
                 break;
             }
             refund_index->balance -= refund;
+             // 存档退费信息
+            Rof refund_info;
+            strcpy(refund_info.cardname, refund_index->aname);
+            strcpy(refund_info.refund_time, refund_index->last_time);
+            refund_info.amount = refund_index->balance;
+            // 将退费信息写入文件
+            write_refund_info( &refund_info);
+            // 将退费信息添加到链表
+            add_info_to_Rof(head_roif, &refund_info);
             printf("退费成功！\n");
             printf("当前余额为：%.2lf\n", refund_index->balance);
             printf("请在下机后到前台领取所退费用！谢谢！\n");
+            saveallcard(); // 保存所有卡片信息到文本文件
             break;
         case 7:
             if (is_admin == 0)
@@ -416,6 +462,7 @@ void menu()
             printf("卡号\t退款金额\n");
             printf("%s\t%.2lf\n", cancel_index->aname, cancel_index->balance);
             cancel_index->balance = 0; // 清空余额
+            saveallcard(); // 保存所有卡片信息到文本文件
             break;
         case 9:
             if (is_admin == 0)
@@ -464,7 +511,7 @@ void menu()
             saveallcard(); // 保存所有卡片信息到文本文件
             savealladmin(); // 保存所有管理员信息到文本文件
             // 将卡片信息写入二进制文件
-            exit(0);
+            return;
         default:
             printf("输入错误，请重新选择菜单项编号(0-8):");
             break;

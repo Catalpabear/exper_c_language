@@ -167,6 +167,7 @@ void freelist(Card *head)
         free(current);
         current = nextNode;
     }
+    printf("释放card链表内存成功！\n");
 }
 //模糊匹配
 Card** find_cards_by_part(Card *head, const char *query_card, int *result_count) 

@@ -1,5 +1,8 @@
 #include"../head/billing_service.h"
 Loif*head_loif,*move_loif;
+Liif*head_liif,*move_liif;
+Reif*head_reif,*move_reif;
+Rof*head_roif,*move_roif;
 int initLoifList(Loif **head_, Loif **move_loif)
 {
     *head_ = (Loif *)malloc(sizeof(Loif)); // 分配内存
@@ -29,6 +32,7 @@ void freeloiflist(Loif*head)
         free(current); // 释放当前节点
         current = nextNode; // 移动到下一个节点
     }
+    printf("logout_info链表已释放\n");
 }
 void add_info_to_loif(Loif *head, const Loif *new_info) {
     Loif *new_node = (Loif *)malloc(sizeof(Loif));
@@ -53,6 +57,24 @@ void add_info_to_loif(Loif *head, const Loif *new_info) {
         current = current->next;
     }
     current->next = new_node; // 将新节点链接到链表末尾
+}
+
+//查找上机记录
+Liif* find_liif_by_cardname(Liif *head, const char *cardname) 
+{
+    if (head == NULL || cardname == NULL) {
+        return NULL; // 返回空指针表示未找到
+    }
+    Liif *current = head->next; // 跳过头节点
+    while (current != NULL) 
+    {
+        if (strcmp(current->cardname, cardname) == 0) 
+        {
+            return current; // 找到匹配的节点
+        }
+        current = current->next; // 移动到下一个节点
+    }
+    return NULL; // 未找到匹配的节点
 }
 //转化int数组为数字
 int combine_to_four_digit_int_specially(int *arr) 
@@ -170,4 +192,170 @@ double calc_total_revenue(Loif* head_loif, int start_time,int end_time)
         free(need_free2);
     }
     return sum;
+}
+
+
+
+int initLiifList(Liif **head_, Liif **move_loif)
+{
+    *head_ = (Liif *)malloc(sizeof(Liif)); // 分配内存
+    if (*head_ == NULL) 
+    {
+        printf("内存分配失败\n");
+        return 0;
+    }
+    (*head_)->next = NULL; // 初始化链表头
+    *move_loif = *head_; // 设置移动指针
+    // 初始化链表头的其他字段
+    strcpy((*head_)->cardname, "head"); // 初始化卡号为空
+    strcpy((*head_)->start_time, "0000-00-00 00:00:00"); // 初始化上机时间为空
+    (*head_)->balance = 0.0; // 初始化余额为0
+    (*head_)->next = NULL; // 确保链表头的下一个指针为空
+    return 1; // 成功初始化
+}
+void freeliiflist(Liif *head)
+{
+    Liif *current = head;
+    Liif *nextNode;
+    while (current != NULL) 
+    {
+        nextNode = current->next; // 保存下一个节点
+        free(current); // 释放当前节点
+        current = nextNode; // 移动到下一个节点
+    }
+    printf("login_info链表已释放\n");
+}
+void add_info_to_Liif(Liif *head, const Liif *new_info) {
+    Liif *new_node = (Liif *)malloc(sizeof(Liif));
+    if (new_node == NULL) 
+    {
+        printf("内存分配失败\n");
+        return;
+    }
+    // 复制新信息到新节点
+    strcpy(new_node->cardname, new_info->cardname);
+    strcpy(new_node->start_time, new_info->start_time);
+    new_node->start_time_t = new_info->start_time_t;
+    new_node->balance = new_info->balance;
+    new_node->next = NULL;
+
+    // 将新节点添加到链表末尾
+    Liif *current = head;
+    while (current->next != NULL) 
+    {
+        current = current->next;
+    }
+    current->next = new_node; // 将新节点链接到链表末尾
+}
+
+
+
+int initReifList(Reif **head_, Reif **move_reif)
+{
+    *head_ = (Reif *)malloc(sizeof(Reif)); // 分配内存
+    if (*head_ == NULL) 
+    {
+        printf("内存分配失败\n");
+        return 0;
+    }
+    (*head_)->next = NULL; // 初始化链表头
+    *move_reif = *head_; // 设置移动指针
+    // 初始化链表头的其他字段
+    strcpy((*head_)->cardname, "head"); // 初始化卡号为空
+    strcpy((*head_)->recharge_time, "0000-00-00 00:00:00"); // 初始化充值时间为空
+    (*head_)->amount = 0.0; // 初始化充值金额为0
+    (*head_)->next = NULL; // 确保链表头的下一个指针为空
+    return 1; // 成功初始化
+}
+void freereiflist(Reif *head)
+{
+    Reif *current = head;
+    Reif *nextNode;
+    while (current != NULL) 
+    {
+        nextNode = current->next; // 保存下一个节点
+        free(current); // 释放当前节点
+        current = nextNode; // 移动到下一个节点
+    }
+    printf("recharge_info链表已释放\n");
+}
+
+void add_info_to_Reif(Reif *head, const Reif *new_info)
+{
+    Reif *new_node = (Reif *)malloc(sizeof(Reif));
+    if (new_node == NULL) 
+    {
+        printf("内存分配失败\n");
+        return;
+    }
+    // 复制新信息到新节点
+    strcpy(new_node->cardname, new_info->cardname);
+    new_node->amount = new_info->amount;
+    strcpy(new_node->recharge_time, new_info->recharge_time);
+    new_node->next = NULL;
+
+    // 将新节点添加到链表末尾
+    Reif *current = head;
+    while (current->next != NULL) 
+    {
+        current = current->next;
+    }
+    current->next = new_node; // 将新节点链接到链表末尾
+}
+
+
+
+
+
+int initRofList(Rof **head_, Rof **move_rof)
+{
+    *head_ = (Rof *)malloc(sizeof(Rof)); // 分配内存
+    if (*head_ == NULL) 
+    {
+        printf("内存分配失败\n");
+        return 0;
+    }
+    (*head_)->next = NULL; // 初始化链表头
+    *move_rof = *head_; // 设置移动指针
+    // 初始化链表头的其他字段
+    strcpy((*head_)->cardname, "head"); // 初始化卡号为空
+    strcpy((*head_)->refund_time, "0000-00-00 00:00:00"); // 初始化退费时间为空
+    (*head_)->amount = 0.0; // 初始化退费金额为0
+    (*head_)->next = NULL; // 确保链表头的下一个指针为空
+    return 1; // 成功初始化
+}
+void freeroflist(Rof *head)
+{
+    Rof *current = head;
+    Rof *nextNode;
+    while (current != NULL) 
+    {
+        nextNode = current->next; // 保存下一个节点
+        free(current); // 释放当前节点
+        current = nextNode; // 移动到下一个节点
+    }
+    printf("refund_info链表已释放\n");
+}
+
+void add_info_to_Rof(Rof *head, const Rof *new_info)
+{
+    Rof *new_node = (Rof *)malloc(sizeof(Rof));
+    if (new_node == NULL) 
+    {
+        printf("内存分配失败\n");
+        return;
+    }
+    // 复制新信息到新节点
+    strcpy(new_node->cardname, new_info->cardname);
+    new_node->amount = new_info->amount;
+    strcpy(new_node->refund_time, new_info->refund_time);
+    new_node->next = NULL;
+
+    // 将新节点添加到链表末尾
+    Rof *current = head;
+    while (current->next != NULL) 
+    {
+        current = current->next;
+    }
+    current->next = new_node; // 将新节点链接到链表末尾
 }
