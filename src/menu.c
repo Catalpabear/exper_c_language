@@ -266,6 +266,8 @@ void menu()
             logout_info.amount = usage_amount;
             logout_info.balance = logout_index->balance;
             strftime(logout_info.last_time, sizeof(logout_info.last_time), "%Y-%m-%d %H:%M:%S", tm_info_logout);
+            //存入更新last_time
+            strcpy(logout_index->last_time, logout_info.last_time);
             // 将下机信息写入文件
             write_logout_info( &logout_info);
             // 将下机信息添加到链表

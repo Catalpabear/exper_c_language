@@ -63,18 +63,18 @@ void add_info_to_loif(Loif *head, const Loif *new_info) {
 Liif* find_liif_by_cardname(Liif *head, const char *cardname) 
 {
     if (head == NULL || cardname == NULL) {
-        return NULL; // 返回空指针表示未找到
+        return NULL;
     }
-    Liif *current = head->next; // 跳过头节点
-    while (current != NULL) 
-    {
-        if (strcmp(current->cardname, cardname) == 0) 
-        {
-            return current; // 找到匹配的节点
+    Liif *current = head->next;
+    Liif *last_match = NULL; // 用于保存最后一个匹配的节点
+
+    while (current != NULL) {
+        if (strcmp(current->cardname, cardname) == 0) {
+            last_match = current; // 更新最后一个匹配的节点
         }
-        current = current->next; // 移动到下一个节点
+        current = current->next;
     }
-    return NULL; // 未找到匹配的节点
+    return last_match; // 返回最后一个匹配的节点，如果没有找到则返回 NULL
 }
 //转化int数组为数字
 int combine_to_four_digit_int_specially(int *arr) 
