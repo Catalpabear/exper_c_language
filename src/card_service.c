@@ -1,8 +1,7 @@
 #include"../head/card_service.h"
 #include<string.h>
 #include<ctype.h> // 用于字符分类函数
-// Card acard[100];
-// int card_count = 0;
+
 Card*head,*lastnode;
 // 添加卡函数
 int add_card()

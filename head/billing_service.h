@@ -13,12 +13,13 @@ typedef struct Logout_info
     char last_time[80];//下机时间
     double amount;//消费金额
     double balance;//余额
-    struct Logout_info *next; // 链表指针
+    struct Logout_info *next;
 } Loif;
 typedef struct {
     Loif** matches;
     int count;
 } LoifMatches;//for billing search
+
 void write_logout_info(const Loif *logout_info);
 int initLoifList(Loif **head_, Loif **move_loif);
 void freeloiflist(Loif *head);

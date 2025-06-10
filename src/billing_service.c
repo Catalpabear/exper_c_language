@@ -14,13 +14,13 @@ int initLoifList(Loif **head_, Loif **move_loif)
     (*head_)->next = NULL; // 初始化链表头
     *move_loif = *head_; // 设置移动指针
     // 初始化链表头的其他字段
-    strcpy((*head_)->cardname, "head"); // 初始化卡号为空
-    strcpy((*head_)->start_time, "0000-00-00 00:00:00"); // 初始化上机时间为空
-    (*head_)->last_time_t = 0; // 初始化上次使用时间为0
-    (*head_)->amount = 0.0; // 初始化消费金额为0
-    (*head_)->balance = 0.0; // 初始化余额为0
-    (*head_)->next = NULL; // 确保链表头的下一个指针为空
-    return 1; // 成功初始化
+    strcpy((*head_)->cardname, "head");
+    strcpy((*head_)->start_time, "0000-00-00 00:00:00"); 
+    (*head_)->last_time_t = 0; 
+    (*head_)->amount = 0.0; 
+    (*head_)->balance = 0.0; 
+    (*head_)->next = NULL; 
+    return 1; 
 }
 void freeloiflist(Loif*head)
 {
@@ -28,9 +28,9 @@ void freeloiflist(Loif*head)
     Loif *nextNode;
     while (current != NULL) 
     {
-        nextNode = current->next; // 保存下一个节点
-        free(current); // 释放当前节点
-        current = nextNode; // 移动到下一个节点
+        nextNode = current->next; 
+        free(current); 
+        current = nextNode; 
     }
     printf("logout_info链表已释放\n");
 }
